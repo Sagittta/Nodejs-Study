@@ -1,9 +1,9 @@
 var express = require('express');
 var router = express.Router();
+var mysql_odbc = require('../db/db_conn')();
+var conn = mysql_odbc.init();
 
 router.get('/', function(req, res, next) {
-    var mysql_odbc = require('../db/db_conn')();
-    var conn = mysql_odbc.init();
     conn.connect(function(err) {
         if (err) {
             res.render('mysql', { connect: '연결 실패', err: err });
