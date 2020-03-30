@@ -58,7 +58,7 @@ router.get('/read/:idx', function(req, res, next) {
         // 매개변수에 idx 전달
         if (err) console.error("err : " + err);
         res.render('read', { title: "글 상세", row: row[0] });
-    //     한개의 데이터만 가져오도록 첫 번째 행만 요청.
+    //     한개의 데이터만 가져오도록 첫 번째 행만 요청함.
     });
 });
 
