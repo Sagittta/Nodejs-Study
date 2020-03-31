@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+</head>
+<body>
+    <h1><%= title %></h1>
+    <a href="/board/write">글쓰기</a>
+    <table border="1">
+        <tr>
+            <td>번호</td>
+            <td>작성자</td>
+            <td>제목</td>
+            <td>조회수</td>
+            <td>수정일</td>
+            <td>등록일</td>
+        </tr>
+        <%
+        for (var i = (page * page_num) - page_num; i < (page * page_num); i++) {
+            // (page * page_num) - page_num : 처음 보여줘야 할 게시물을 찾음. (2페이지일 경우 (2 * 10) - 10 = 10으로 10번째 게시글부터 노출)
+            // page * page_num : 마지막으로 보여질 게시물 번호를 찾음 (2페이지일 경우 2*10 = 20 으로 20번째 게시글까지 보여짐.)
+            if (i > length) {
+                // 현재 데이터가 전체보다 크면 i값을 늘려 종료함.
+                i++;
+            } else {
+                var data = rows[i]
+        //    i값이 전체 데이터보다 작다면 data 를 담아 리스트에 노출
+        %>
+        <tr>
+            <td><%= i + 1 %></td>
+            <td><%= data.name %></td>
+            <td><a href="/board/read/<%= data.idx %>"><%= data.title %></a></td>
+            <td><%= data.hit %></td>
+            <td><%= data.modidate %></td>
+            <td><%= data.regdate %></td>
+        </tr>
+        <%
+            }
+        }
+        %>
+        <tr>
+            <td colspan="6">
+                <%
+                for (var j = 0; j < rows.length / page_num; j++) {
+                //    length / page_num : 전체 개수와 페이지 노출 개수를 나누어 총 페이지 계산
+                %>
+                    [<a href="/board/page/<%= j + 1 %>"><%= j + 1 %></a>]
+<!--                계산된 페이지만큼 노출 -->
+                <%
+                }
+                %>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

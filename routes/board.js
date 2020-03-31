@@ -23,11 +23,32 @@ router.get('/list/:page', function(req, res, next) {
     });
 });
 
+router.get('/page', function(req, res, next) {
+    res.redirect('/board/page/1');
+});
+
+router.get('/page/:page', function(req, res, next) {
+    // page 라는 URI 접속 경로 추가 (기존 리스트에 페이징 추가)
+    var page = req.params.page;
+    // 현재 페이지를 req 객체를 통해 가져옴
+    var sql = "SELECT idx, name, title, date_format(modidate, '%Y-%m-%d %H:%i:%s') modidate, date_format(regdate, '%Y-%m-%d %H:%i:%s') regdate, hit FROM board";
+    conn.query(sql, function (err, rows) {
+        if (err) console.error("err : " + err);
+        res.render('page', { title: '게시판 리스트', rows: rows, page: page, length: rows.length-1, page_num: 3, pass: true });
+        // rows: 데이터베이스 쿼리에 데이터 렌더링, page: 현재 페이지 랜더링
+        // length: 데이터에 전체 길이를 랜더링. (-1은 db 행 전체는 1부터 시작이지만 for 문은 0부터 시작이므로)
+        // page_num: 한 페이지에 보여줄 행의 갯수
+        console.log(rows.length-1);
+    });
+});
+
+// 글쓰기 페이지 바인딩
 router.get('/write', function(req, res, next) {
     // write.ejs 렌더링
     res.render('write', { title: '게시판 글 쓰기'});
 });
 
+// 글쓰기 db 연동
 router.post('/write', function(req, res, next) {
     // post 방식으로 /write 에 들어갈 때
     var name = req.body.name;
@@ -48,6 +69,7 @@ router.post('/write', function(req, res, next) {
     });
 });
 
+// 상세 페이지 바인딩
 router.get('/read/:idx', function(req, res, next) {
     var idx = req.params.idx;
     // read 라는 URI 뒤의 idx 게시글의 고유번호를 받음.
@@ -62,6 +84,7 @@ router.get('/read/:idx', function(req, res, next) {
     });
 });
 
+// 글 수정 연동
 router.post('/update', function(req, res, next) {
     // post 방식으로 넘어오는 /update URI 바인딩
     var idx = req.body.idx;
