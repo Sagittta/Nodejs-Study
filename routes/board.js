@@ -62,4 +62,28 @@ router.get('/read/:idx', function(req, res, next) {
     });
 });
 
+router.post('/update', function(req, res, next) {
+    // post 방식으로 넘어오는 /update URI 바인딩
+    var idx = req.body.idx;
+    var name = req.body.name;
+    var title = req.body.title;
+    var content = req.body.content;
+    var passwd = req.body.passwd;
+    var datas = [name, title, content, idx, passwd];
+    // 변수로 넘어온 데이터를 배열로 합침
+
+    var sql = "UPDATE board SET name = ?, title = ?, content = ?, modidate = now() WHERE idx = ? AND passwd = ?";
+    // 글 고유번호와 비밀번호가 조건절
+    conn.query(sql, datas, function(err, result) {
+        if (err)    console.error("err : " + err);
+        if (result.affectedRows == 0) {
+            // affectedRows => 해당 쿼리로 변경된 수에 행을 불러옴. 0 이면 업데이트가 되지 않은 것이므로 비밀번호가 틀린 것.
+            res.send("<script>alert('패스워드가 일치하지 않습니다.');    history.back();</script>");
+        //    패스워드가 틀렸으면 이전 페이지로 다시 보냄 (send)
+        } else {
+            res.redirect('/board/read/' + idx);
+        }
+    });
+});
+
 module.exports = router;
