@@ -70,7 +70,7 @@ router.post('/write', function(req, res, next) {
     });
 });
 
-// 상세 페이지 바인딩
+// 글 읽기 바인딩
 router.get('/read/:idx', function(req, res, next) {
     var idx = req.params.idx;
     // read 라는 URI 뒤의 idx 게시글의 고유번호를 받음.
@@ -79,9 +79,17 @@ router.get('/read/:idx', function(req, res, next) {
     // 선택한 게시글만 불러오는 쿼리문 작성
     conn.query(sql, [idx], function(err, row) {
         // 매개변수에 idx 전달
-        if (err) console.error("err : " + err);
-        res.render('read', { title: "글 상세", row: row[0] });
-    //     한개의 데이터만 가져오도록 첫 번째 행만 요청함.
+        if (err) {
+            console.error("err : " + err);
+        } else {
+            sql = "UPDATE board SET hit = hit + 1 WHERE idx = ?";
+            conn.query(sql, [idx], function(err, row) {
+                if (err) console.error("err : " + err);
+            });
+
+            res.render('read', {title: "글 상세", row: row[0]});
+            //     한개의 데이터만 가져오도록 첫 번째 행만 요청함.
+        }
     });
 });
 
@@ -110,6 +118,7 @@ router.post('/update', function(req, res, next) {
     });
 });
 
+// 글 삭제 연동
 router.post('/delete', function(req, res, next) {
     var idx = req.body.idx;
     var passwd = req.body.passwd;
