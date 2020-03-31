@@ -27,6 +27,7 @@ router.get('/page', function(req, res, next) {
     res.redirect('/board/page/1');
 });
 
+// 페이징 기능
 router.get('/page/:page', function(req, res, next) {
     // page 라는 URI 접속 경로 추가 (기존 리스트에 페이징 추가)
     var page = req.params.page;
@@ -64,7 +65,7 @@ router.post('/write', function(req, res, next) {
     conn.query(sql, datas, function(err, rows) {
         // query 함수로 sql 실행, datas 를 매개변수로 데이터 입력
         if (err) console.error("err : " + err);
-        res.redirect('/board/list');
+        res.redirect('/board/page');
     //    오류 없으면 list 페이지로 이동.
     });
 });
@@ -105,6 +106,22 @@ router.post('/update', function(req, res, next) {
         //    패스워드가 틀렸으면 이전 페이지로 다시 보냄 (send)
         } else {
             res.redirect('/board/read/' + idx);
+        }
+    });
+});
+
+router.post('/delete', function(req, res, next) {
+    var idx = req.body.idx;
+    var passwd = req.body.passwd;
+    var datas = [idx, passwd];
+
+    var sql = "DELETE FROM board WHERE idx = ? AND passwd = ?";
+    conn.query(sql, datas, function(err, result) {
+        if (err) console.error("err : " + err);
+        if (result.affectedRows == 0) {
+            res.send("<script>alert('패스워드가 일치하지 않습니다.'); history.back(); </script>");
+        } else {
+            res.redirect('/board/page/');
         }
     });
 });
