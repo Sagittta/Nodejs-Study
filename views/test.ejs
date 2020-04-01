@@ -35,22 +35,28 @@
         firebase.initializeApp(firebaseConfig);
         // firebase 에서 제공하는 realtime database 에 데이터 저장
 
-        var newPostKey = firebase.database().ref().child('posts').push().key;
+        let maxid = 0;
+        // var newPostKey = firebase.database().ref().child('posts').push().key;
 
         var postData = {
-            brdno: newPostKey,
-            brdwriter:"홍길동",
-            brdtitle:"게시판 제목",
-            brdmemo:"게시물 내용",
-            brddate: Date.now()
+            // idx: newPostKey,
+            name:"홍길동",
+            title:"게시판 제목",
+            content:"게시물 내용",
+            regdate: Date.now(),
+            modidate: Date.now(),
+            passwd: "1234",
+            hit: 0
         };
         // 데이터 저장하기 위해 JSon 형태로 데이터 구성
         // 하나의 JSon 이 하나의 행, 각각의 키 (brdno, brdwriter, ..., brddate) 가 필드가 됨.
 
-        var updates = {};
-        updates['/board/' + newPostKey] = postData;
-
-        firebase.database().ref().update(updates);
+        var ref = firebase.database().ref('board');
+        ref.once("value").then(function(snapshot) {
+            maxid = snapshot.numChildren();
+            console.log(maxid);
+            firebase.database().ref('/board/' + (maxid+1)).set(postData);
+        });
         //    파이어베이스 데이터베이스에 저장
 
         // firebase.analytics();

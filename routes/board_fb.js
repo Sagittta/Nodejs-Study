@@ -1,34 +1,46 @@
 var express = require('express');
 var router = express.Router();
+var firebase = require("firebase");
+var dateFormat = require('dateformat');
 
+var firebaseConfig = {
+    apiKey: "AIzaSyAWnx8yp2eGG3RCDrdt9ejitTv4_yvMIMc",
+    authDomain: "nansae-bcc5d.firebaseapp.com",
+    databaseURL: "https://nansae-bcc5d.firebaseio.com",
+    projectId: "nansae-bcc5d",
+    storageBucket: "nansae-bcc5d.appspot.com",
+    messagingSenderId: "688614872373",
+    appId: "1:688614872373:web:f9febe31778183de6e287c",
+    measurementId: "G-K0J4HP3MBE"
+};
+firebase.initializeApp(firebaseConfig);
 
-router.get('/index', function(req, res, next) {
-    res.render('index', { title: 'Express' });
-});
-
-router.get('/test',function(req, res, next) {
+router.get('/test', function(req, res, next) {
     res.render('test');
 });
 
+router.get('/', function(req, res, next) {
+    res.redirect('/board_fb/list');
+})
 
-// router.get('/list', function(req, res, next) {
-//     res.redirect('/board/list/1');
-// });
-//
-// router.get('/list/:page', function(req, res, next) {
-//     // URI 를 /list/:page 형태로 받음. board/list/(페이지 숫자) 형식으로 게시판 리스트 노출
-//     var page = req.params.page;
-//     // URI 변수 ':page' 로 맵핑된 page 값을 req 객체로 가져옴.
-//     // 페이징 개발을 위해 미리 선언함.
-//     var sql = "SELECT idx, name, title, date_format(modidate, '%Y-%m-%d %H:%i:%s') modidate, date_format(regdate, '%Y-%m-%d %H:%i:%s') regdate FROM board";
-//     // sql 문 수행
-//     conn.query(sql, function(err, rows) {
-//         // select 된 행을 가져와서 rows 변수에 담고, 오류가 있으면 err 변수에 담음
-//         if (err) console.error("err : " + err);
-//         res.render('list', { title: '게시판 리스트', rows: rows });
-//     //    수행된 데이터를 list 뷰로 렌더링
-//     });
-// });
+router.get('/list', function(req, res, next) {
+    res.redirect('/board_fb/list/1');
+});
+
+router.get('/list/:page', function(req, res, next) {
+    var page = req.params.page;
+
+    firebase.database().ref('board').orderByKey().once('value', function(snapshot) {
+        var rows = [];
+        snapshot.forEach(function(childSnapshot) {
+            var childData = childSnapshot.val();
+
+            childData.brddate = dateFormat(childData.brddate, "yyyy-mm-dd");
+            rows.push(childData);
+        });
+        res.render('list_fb', { title: '게시판 리스트', rows: rows });
+    });
+});
 //
 // router.get('/page', function(req, res, next) {
 //     res.redirect('/board/page/1');

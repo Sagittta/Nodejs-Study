@@ -28,7 +28,7 @@ app.use('/users', usersRouter);
 app.use('/form', formRouter);
 app.use('/mysql', mysqlRouter);
 app.use('/board', boardRouter);
-app.use('/boardfb', boardfbRouter);
+app.use('/board_fb', boardfbRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
