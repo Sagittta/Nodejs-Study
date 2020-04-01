@@ -9,6 +9,7 @@ var usersRouter = require('./routes/users');
 var formRouter = require('./routes/form');
 var mysqlRouter = require('./routes/mysql');
 var boardRouter = require('./routes/board');
+var boardfbRouter = require('./routes/board_fb');
 
 var app = express();
 
@@ -27,6 +28,7 @@ app.use('/users', usersRouter);
 app.use('/form', formRouter);
 app.use('/mysql', mysqlRouter);
 app.use('/board', boardRouter);
+app.use('/boardfb', boardfbRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

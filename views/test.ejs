@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-app.js"></script>
+
+
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-database.js"></script>
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/7.13.1/firebase-analytics.js"></script>
+
+    <title>FIREBASE TEST</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+<body>
+    <h1>FIREBASE TEST</h1>
+    <p>파이어베이스 콘솔에 데이터가 추가되었는지 확인하세요</p>
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyAWnx8yp2eGG3RCDrdt9ejitTv4_yvMIMc",
+            authDomain: "nansae-bcc5d.firebaseapp.com",
+            databaseURL: "https://nansae-bcc5d.firebaseio.com",
+            projectId: "nansae-bcc5d",
+            storageBucket: "nansae-bcc5d.appspot.com",
+            messagingSenderId: "688614872373",
+            appId: "1:688614872373:web:f9febe31778183de6e287c",
+            measurementId: "G-K0J4HP3MBE"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        // firebase 에서 제공하는 realtime database 에 데이터 저장
+
+        var newPostKey = firebase.database().ref().child('posts').push().key;
+
+        var postData = {
+            brdno: newPostKey,
+            brdwriter:"홍길동",
+            brdtitle:"게시판 제목",
+            brdmemo:"게시물 내용",
+            brddate: Date.now()
+        };
+        // 데이터 저장하기 위해 JSon 형태로 데이터 구성
+        // 하나의 JSon 이 하나의 행, 각각의 키 (brdno, brdwriter, ..., brddate) 가 필드가 됨.
+
+        var updates = {};
+        updates['/board/' + newPostKey] = postData;
+
+        firebase.database().ref().update(updates);
+        //    파이어베이스 데이터베이스에 저장
+
+        // firebase.analytics();
+        firebase.analytics();
+    </script>
+
+</body>
+</html>
